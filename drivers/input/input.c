@@ -2,9 +2,8 @@
  * The input core
  *
  * Copyright (c) 1999-2002 Vojtech Pavlik
- */
+ * Copyright (C) 2020 XiaoMi, Inc.
 
-/*
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
@@ -49,6 +48,8 @@ static LIST_HEAD(input_handler_list);
 static DEFINE_MUTEX(input_mutex);
 
 static const struct input_value input_value_sync = { EV_SYN, SYN_REPORT, 1 };
+
+void sde_crtc_touch_notify(void);
 
 static inline int is_event_supported(unsigned int code,
 				     unsigned long *bm, unsigned int max)
@@ -435,6 +436,7 @@ void input_event(struct input_dev *dev,
 		spin_lock_irqsave(&dev->event_lock, flags);
 		input_handle_event(dev, type, code, value);
 		spin_unlock_irqrestore(&dev->event_lock, flags);
+		sde_crtc_touch_notify();
 	}
 }
 EXPORT_SYMBOL(input_event);
